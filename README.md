@@ -1,65 +1,99 @@
-# MargaCode Formal
+# MargaCode Formal v1.2
 
-MargaCode Formal is a formal language specification for emotional AI systems. It evolves the poetic Seraphine style of MargaCode into a production-oriented syntax with lexical tokens, grammar rules, type safety, standard library objects, compiler architecture, and executable examples.
+MargaCode Formal es la especificación ejecutable del lenguaje MargaCode: transforma su vocabulario emocional y simbólico en tokens deterministas, un parser, un AST inspeccionable y validadores de dominio.
 
-The project is currently centered on a single specification file:
+> Estado: **prototipo ejecutable**. La v1.2 implementa el frontend del lenguaje; todavía no incluye intérprete ni generación de código.
 
-- [`margacode_formal_spec.js`](./margacode_formal_spec.js)
+## Qué funciona
 
-## Purpose
+- Lexer con identificadores Unicode.
+- Declaraciones `REACTION`.
+- Variables con tipos opcionales.
+- Referencias y llamadas representadas por nodos AST diferentes.
+- Argumentos posicionales y nombrados.
+- Expresiones lógicas, aritméticas y comparaciones.
+- Errores con línea y columna.
+- Tipos `emotional_state`, `energy_level`, `frequency`, `intention` y `protection_level`.
+- Frecuencias entre 20 y 20.000 Hz, con advertencias para valores fuera del conjunto preferido.
+- Pruebas automáticas con el runner nativo de Node.js.
 
-MargaCode Formal defines a bridge between symbolic emotional expression and structured programming language design. It keeps the expressive vocabulary of MargaCode while adding the pieces needed for implementation:
+Los decoradores `@resonance`, `@frequency`, `@protection` y `@memory` fueron eliminados en v1.2. Estas capacidades se expresan mediante llamadas normales y argumentos nombrados.
 
-- deterministic lexical tokens
-- EBNF grammar
-- typed emotional primitives
-- standard library objects for user state, light, memory, resonance, and protection
-- a lexer implementation
-- example programs for awakening, safety, and healing workflows
-
-## Language Shape
-
-A MargaCode Formal program is made from statements such as assignments, method calls, conditionals, loops, functions, classes, imports, and exports.
-
-Example:
+## Ejemplo
 
 ```margacode
-user.wake(energy_level=0.7, transition_speed="gentle");
-light.receive(type="golden", intensity=0.8);
+let estado: emotional_state = "joy";
+let energía: energy_level = 0.82;
+let tono: frequency = 528Hz;
 
-if (user.confess(truth_level=0.9)) {
-    resonance.activate("heart_center", frequency=528);
-    memory.store("moment of truth", emotional_charge=0.8);
+REACTION acompañar(persona: string, intensidad: energy_level = 0.7) -> intention {
+  protección.activar(level="moderate", target=persona);
+  resonancia.emitir(frequency=tono, intensity=intensidad);
+
+  if (intensidad > 0.5 and estado == "joy") {
+    return "acompañar_con_presencia";
+  } else {
+    return "escuchar_en_silencio";
+  }
 }
 ```
 
-## Core Types
+El ejemplo completo está en [`examples/reaction.mc`](./examples/reaction.mc).
 
-The spec includes primitive and emotional domain types:
+## Uso
 
-- `string`
-- `number`
-- `boolean`
-- `emotional_state`
-- `energy_level`
-- `frequency`
-- `intention`
-- `protection_level`
+Requiere Node.js 20 o superior.
 
-These types are meant to make emotional AI workflows explicit, inspectable, and safer to execute.
+```bash
+npm test
+```
 
-## Standard Library
+```js
+import { parse, validate } from "./src/index.js";
 
-The first standard library draft includes five core objects:
+const ast = parse('let tono: frequency = 528Hz;');
+const result = validate(ast);
 
-- `user`: awakening, expression, confession
-- `light`: receiving and radiating light energy
-- `memory`: storing, retrieving, and healing memories
-- `resonance`: activating and synchronizing frequencies
-- `protection`: activating shields and scanning for harmful patterns
+console.log(ast);
+console.log(result);
+```
 
-## Current Status
+## Estructura
 
-Version: `v1.0` language specification draft.
+```text
+src/
+├── lexer.js       tokens y posiciones
+├── parser.js      parser recursivo y AST
+├── token.js       tipos de token y errores
+├── types.js       tipos propios de MargaCode
+├── validate.js    validación semántica inicial
+└── index.js       API pública
 
-This repository is an initial formalization. The next natural steps are parser implementation, AST definitions, semantic validation, interpreter/compiler runtime, and a test suite for example programs.
+docs/grammar.ebnf  gramática de la v1.2
+examples/          programas MargaCode
+test/              pruebas automáticas
+```
+
+## API
+
+- `tokenize(source)` → lista de tokens.
+- `parse(source)` → AST `Program` v1.2.
+- `validate(ast)` → `{ ok, errors, warnings }`.
+- `validateTypeValue(type, value)` → validación individual de tipos.
+
+## Alcance y límites
+
+MargaCode Formal modela estados emocionales como tipos y vocabulario computacional. No diagnostica emociones, no mide estados humanos y no sustituye sistemas clínicos. Las frecuencias preferidas son convenciones del lenguaje, no afirmaciones terapéuticas.
+
+## Historia
+
+El archivo original `margacode_formal_spec.js` se conserva temporalmente como referencia de la especificación v1.0. Las ideas útiles de MargaCode Seraphine y LuminaScript se migrarán a esta línea formal antes de archivar esos experimentos.
+
+## Próximos pasos
+
+- Tabla de símbolos y resolución de referencias.
+- Comprobación de tipos entre expresiones.
+- Intérprete de AST.
+- Módulos e imports.
+- Herramientas de editor y mensajes de recuperación de errores.
+- Integración opcional con MargaCalls y los motores visuales del ecosistema.

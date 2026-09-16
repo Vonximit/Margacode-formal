@@ -1,0 +1,15 @@
+{
+  "name": "margacode-formal",
+  "version": "1.2.0",
+  "description": "Lexer, parser, AST and domain types for the MargaCode language.",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": "./src/index.js",
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/*.js"
+  },
+  "keywords": ["margacode", "dsl", "parser", "ast", "affective-computing"],
+  "author": "Margaret (Vonximit)",
+  "license": "UNLICENSED"
+}
