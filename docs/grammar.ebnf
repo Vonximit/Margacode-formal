@@ -1,0 +1,36 @@
+program              = declaration* EOF ;
+declaration          = reaction_declaration | variable_declaration | statement ;
+
+reaction_declaration = "REACTION" identifier "(" parameters? ")"
+                       ("->" type_reference)? block ;
+parameters           = parameter ("," parameter)* ;
+parameter            = identifier ":" type_reference ("=" expression)? ;
+
+variable_declaration = "let" identifier (":" type_reference)?
+                       "=" expression ";" ;
+
+statement            = if_statement | return_statement | block
+                     | expression ";" ;
+if_statement         = "if" "(" expression ")" block ("else" (if_statement | block))? ;
+return_statement     = "return" expression? ";" ;
+block                = "{" declaration* "}" ;
+
+expression           = logical_or ;
+logical_or           = logical_and ("or" logical_and)* ;
+logical_and          = equality ("and" equality)* ;
+equality             = comparison (("==" | "!=") comparison)* ;
+comparison           = term ((">" | ">=" | "<" | "<=") term)* ;
+term                 = factor (("+" | "-") factor)* ;
+factor               = unary (("*" | "/" | "%") unary)* ;
+unary                = ("not" | "-") unary | postfix ;
+postfix              = primary (("." identifier) | call)* ;
+call                 = "(" arguments? ")" ;
+arguments            = argument ("," argument)* ;
+argument             = identifier "=" expression | expression ;
+primary              = number | frequency | string | boolean | "null"
+                     | identifier | array | "(" expression ")" ;
+array                = "[" (expression ("," expression)*)? "]" ;
+
+type_reference       = identifier ;
+identifier           = unicode_letter (unicode_letter | unicode_number | "_")* ;
+frequency            = number ("Hz" | "hz") ;
